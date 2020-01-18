@@ -1,4 +1,4 @@
-# MarvinAndManga
+# ToolieforMarvin
 Repo for Marvin and Manga code for finding Star Formation Rates of galaxies.
 
 Most methods in this repo use marvin.tools https://github.com/sdss/marvin
