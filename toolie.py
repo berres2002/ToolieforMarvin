@@ -146,3 +146,4 @@ class   MFTOOLIE:
     def findSSFR(self):
         s=self.findSFR()/float(self.sm)
         return s
+
