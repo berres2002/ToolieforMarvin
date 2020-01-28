@@ -5,6 +5,8 @@ from marvin.tools import Maps
 from astropy import units as u
 import scipy.integrate as integrate
 from numpy import sinh , sqrt, pi
+from astropy.table import Table
+
 class dist:
     def __init__(self,z):
         self.z=float(z)
@@ -72,6 +74,9 @@ class   MFTOOLIE:
         self.fRat=np.ma.sum(hr)
         self.z=float(m.dapall['nsa_zdist'])
         self.Mpc = u.parsec *1_000_000
+        f=Table.read('drpall-v2_4_3.fits')
+        r=f[f['plateifu']==m.plateifu]
+        self.sm=r['nsa_elpetro_mass']
 
     #Finds Dust extinction, can use marvins ratio or calculated ratio
     def extinct(self,**kwargs:{'use_mRatio':False}):
@@ -138,3 +143,7 @@ class   MFTOOLIE:
         sf=np.log10(L)-41.27
         sfr=10**sf
         return sfr
+    def findSSFR(self):
+        s=self.findSFR()/float(self.sm)
+        return s
+
