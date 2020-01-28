@@ -5,6 +5,8 @@ from marvin.tools import Maps
 from astropy import units as u
 import scipy.integrate as integrate
 from numpy import sinh , sqrt, pi
+from astropy.table import Table
+
 class dist:
     def __init__(self,z):
         self.z=float(z)
@@ -54,17 +56,17 @@ class   MFTOOLIE:
         hal=m.getMap('emline_gflux',channel='ha_6564')
         hbe=m.getMap('emline_gflux',channel='Hb_4862')
         man = masks['sf']['global'] #* hal.pixmask.labels_to_value('DONOTUSE')
-        m1=hal[man]
-        ham=m1.value *10**(-17)
+        self.m1=hal[man]
+        ham=self.m1.value *10**(-17)
         #ham = hal.mask | man
         #h1=np.array(hal)
-        self.ha=np.sum(ham) * u.dimensionless_unscaled
+        self.ha=np.ma.sum(ham) * u.dimensionless_unscaled
         masb = masks['sf']['global'] #* hbe.pixmask.labels_to_value('DONOTUSE')
         m2=hbe[masb]
         hbm=m2.value*10**(-17)
         #hbm = hbe.mask | masb
        # h2=np.array(hbe)
-        self.hb=np.sum(hbm)* u.dimensionless_unscaled
+        self.hb=np.ma.sum(hbm)* u.dimensionless_unscaled
         ratio=m.getMapRatio('emline_gflux','ha_6564','Hb_4862')
         rMas = ~masks['sf']['global'] * ratio.pixmask.labels_to_value('DONOTUSE')
         Rat = ratio.mask | rMas
@@ -72,6 +74,9 @@ class   MFTOOLIE:
         self.fRat=np.ma.sum(hr)
         self.z=float(m.dapall['nsa_zdist'])
         self.Mpc = u.parsec *1_000_000
+        f=Table.read('drpall-v2_4_3.fits')
+        r=f[f['plateifu']==m.plateifu]
+        self.sm=r['nsa_elpetro_mass']
 
     #Finds Dust extinction, can use marvins ratio or calculated ratio
     def extinct(self,**kwargs:{'use_mRatio':False}):
@@ -113,8 +118,14 @@ class   MFTOOLIE:
             return a
 
     #Finds luminosity using previous methods, have not implemented 'calc' parameter for distance calculations
-    def findLum(self, **kwargs:{'use_mRatio':False}):
+    def findLum(self, **kwargs:{'use_mRatio':False,'nod':False}):
         #Might have to convert distance to something else
+        if kwargs.get('nod')==True:
+            f = cosmo.luminosity_distance(self.z).value * self.Mpc
+            x = f.to(u.cm)
+            fl = self.fluxFind()  # * u.erg / (u.cm ** 2 * u.second)
+            L = fl * 4 * pi * x ** 2
+            return L.value
         if kwargs.get('use_mRatio')==True:
             f = cosmo.luminosity_distance(self.z).value * self.Mpc
             x = f.to(u.cm)
@@ -127,4 +138,11 @@ class   MFTOOLIE:
             fl = self.fluxFind() #* u.erg / (u.cm ** 2 * u.second)
             L = fl * 4 * pi * x ** 2
             return L
-
+    def findSFR(self):
+        L=self.findLum(nod=True)
+        sf=np.log10(L)-41.27
+        sfr=10**sf
+        return sfr
+    def findSSFR(self):
+        s=self.findSFR()/float(self.sm)
+        return s
