@@ -47,7 +47,7 @@ class auto:
         data.to_csv(file,index=False)
         print('Data table saved as = '+file)
     def __init__(self,temp):
-        if temp==0:
+        if temp=='0':
              f = Table.read(os.getenv('MANGA_SPECTRO_REDUX')+'/MPL-9/drpall-v2_7_1.fits',format='fits')
              r = f[f['mngtarg1'] > 0]
              # ra=np.random.randint(0,len(r))
@@ -78,8 +78,8 @@ class auto:
                 return
 
 if __name__=='__main__':
-    inp=input('\n0 for Demo, anything else for full thing -> ')
+    inp=input('\nType 0 for Demo, "exit" to exit, and anything else for the full thing -> ')
     if inp =='exit':
         print('Exiting Program')
     else:
-        auto(int(inp))
+        auto(inp)
