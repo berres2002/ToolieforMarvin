@@ -60,39 +60,47 @@ class   MFTOOLIE:
 
     #Initializes object like a marvin Maps file, applies the star forming mask and then averages the arrays
     def __init__(self,s,**kwargs:{'locality':'remote'}):
-        self.efail=False
-        self.s=s
-        m=Maps(s)
-        #print(m.release)
-        self.m=m
-        masks=m.get_bpt(return_figure=False,show_plot=False)
-        hal=m.getMap('emline_gflux',channel='ha_6564')
-        hbe=m.getMap('emline_gflux',channel='Hb_4862')
-        man = masks['sf']['global'] #* hal.pixmask.labels_to_value('DONOTUSE')
-        self.m1=hal[man]
-        ham=self.m1.value *10**(-17)
-        #ham = hal.mask | man
-        #h1=np.array(hal)
-        self.ha=np.ma.sum(ham) * u.dimensionless_unscaled
-        masb = masks['sf']['global'] #* hbe.pixmask.labels_to_value('DONOTUSE')
-        m2=hbe[masb]
-        hbm=m2.value*10**(-17)
-        #hbm = hbe.mask | masb
-       # h2=np.array(hbe)
-        self.hb=np.ma.sum(hbm)* u.dimensionless_unscaled
-       #ratio=m.getMapRatio('emline_gflux','ha_6564','Hb_4862')
-       #Mas = ~masks['sf']['global'] * ratio.pixmask.labels_to_value('DONOTUSE')
-       #Rat = ratio.mask | rMas
-       #hr=np.ma.array(Rat)
-       #self.fRat=np.ma.sum(hr)
-        self.z=float(m.dapall['nsa_zdist'])
-        #self.Mpc = u.parsec *1_000_000
-        f=Table.read(os.getenv('MANGA_SPECTRO_REDUX')+'/MPL-9/drpall-v2_7_1.fits',format='fits') # Change this
-        r=f[f['plateifu']==m.plateifu]
-        self.sm=r['nsa_elpetro_mass']
-
+        try:
+            self.efail=False
+            self.s=s
+            m=Maps(s)
+            #print(m.release)
+            self.m=m
+            masks=m.get_bpt(return_figure=False,show_plot=False)
+            hal=m.getMap('emline_gflux',channel='ha_6564')
+            hbe=m.getMap('emline_gflux',channel='Hb_4862')
+            man = masks['sf']['global'] #* hal.pixmask.labels_to_value('DONOTUSE')
+            self.m1=hal[man]
+            ham=self.m1.value *10**(-17)
+            #ham = hal.mask | man
+            #h1=np.array(hal)
+            self.ha=np.ma.sum(ham) * u.dimensionless_unscaled
+            masb = masks['sf']['global'] #* hbe.pixmask.labels_to_value('DONOTUSE')
+            m2=hbe[masb]
+            hbm=m2.value*10**(-17)
+            #hbm = hbe.mask | masb
+           # h2=np.array(hbe)
+            self.hb=np.ma.sum(hbm)* u.dimensionless_unscaled
+           #ratio=m.getMapRatio('emline_gflux','ha_6564','Hb_4862')
+           #Mas = ~masks['sf']['global'] * ratio.pixmask.labels_to_value('DONOTUSE')
+           #Rat = ratio.mask | rMas
+           #hr=np.ma.array(Rat)
+           #self.fRat=np.ma.sum(hr)
+            self.z=float(m.dapall['nsa_zdist'])
+            #self.Mpc = u.parsec *1_000_000
+            f=Table.read(os.getenv('MANGA_SPECTRO_REDUX')+'/MPL-9/drpall-v2_7_1.fits',format='fits') # Change this
+            r=f[f['plateifu']==m.plateifu]
+            self.sm=r['nsa_elpetro_mass']
+        except:
+            yo='The MFTOOLIE initializer failed for Plate-Ifu '+s
+            log.error(yo)
+            print(yo)
+            self.efail = True
+            return
     #Finds Dust extinction, can use marvins ratio or calculated ratio
     def extinct(self,**kwargs:{'use_mRatio':False}):
+        if self.efail:
+            return 0.0
         try:
             if kwargs.get('use_mRatio') == True:
                 e = 0.934 * np.log((self.fRat) / 2.86)
