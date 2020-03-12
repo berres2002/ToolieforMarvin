@@ -72,7 +72,7 @@ class auto:
                     a.append(r[i]['plateifu'])
                 a = np.array(a)
                 b = a.astype(str)
-                self.run(b,'full_test.csv')
+                self.run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/full_MPL9.csv')
             if umm=='n' or '':
                 print('Exiting Program')
                 return
