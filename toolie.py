@@ -63,7 +63,7 @@ class   MFTOOLIE:
         self.efail=False
         self.s=s
         m=Maps(s)
-        print(m.release)
+        #print(m.release)
         self.m=m
         masks=m.get_bpt(return_figure=False,show_plot=False)
         hal=m.getMap('emline_gflux',channel='ha_6564')
