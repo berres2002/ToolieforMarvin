@@ -108,8 +108,8 @@ class unwise:
         plt.colorbar()
     def getApFlux(self,n,**kwargs:{'plot':False}):
         aper=[]
-        try:
-            self.getFits()
+        self.getFits()
+        try: 
             for i in range(len(n)):
                 a=float(self.r['nsa_elpetro_th50_r'])*n[i]
                 b=a*float(self.r['nsa_elpetro_ba'])
