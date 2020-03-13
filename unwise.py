@@ -38,7 +38,7 @@ class unwise:
                 print(e2)
                 return
         except:
-            e1='The unwise initializer failed for plate-ifu: '+plate+' band: '+band
+            e1='The unwise initializer failed for plate-ifu: '+plate+' band: '+str(band)
             log.error(e1)
             print(e1)
             return
