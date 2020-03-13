@@ -111,7 +111,7 @@ class unwise:
     def getApFlux(self,n,**kwargs:{'plot':False}):
         aper=[]
         self.getFits()
-        try: 
+        #try: 
             for i in range(len(n)):
                 a=float(self.r['nsa_elpetro_th50_r'])*n[i]
                 b=a*float(self.r['nsa_elpetro_ba'])
@@ -137,9 +137,9 @@ class unwise:
                 b4=arr*5.2269E-05
                 f.close()
                 return b4
-        except:
-            er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
-            log.error(er)
-            print(er)
-            u=[0.0,0.0,0.0,0.0]
-            return u
+     #   except:
+     #       er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
+     #       log.error(er)
+     #       print(er)
+     #       u=[0.0,0.0,0.0,0.0]
+     #       return u
