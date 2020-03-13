@@ -44,10 +44,11 @@ class unwise:
             return
     def getFits(self):
         try:
-            fits.open(self.fP)
+            f=fits.open(self.fP)
             bruh=self.fN+' already exists at '+self.path
             print(bruh)
             log.error(bruh)
+            f.close()
             return
         except:
             url1='https://irsa.ipac.caltech.edu/ibe/search/wise/allwise/p3am_cdd?POS={},{}'
@@ -86,7 +87,8 @@ class unwise:
                 print(e5)
                 return
             try:
-                fits.open(self.fP);
+               g= fits.open(self.fP);
+               g.close()
             except:
                 e6=('Something went wrong trying to open the file for plate-ifu: '+self.plate+' in band '+str(self.band))
                 log.error(e6)
@@ -128,10 +130,12 @@ class unwise:
             if self.band==3:
                 arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
                 b3=arr*1.8326e-06
+                f.close()
                 return b3
             if self.band==4:
                 arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
                 b4=arr*5.2269E-05
+                f.close()
                 return b4
         except:
             er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
