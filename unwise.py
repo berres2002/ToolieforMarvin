@@ -127,8 +127,8 @@ class unwise:
             er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
             log.error(er)
             print(er)
-            u=[0.0,0.0,0.0,0.0]
-            return u
+            bad=[0.0,0.0,0.0,0.0]
+            return bad
             #return flux[0]['aperture_sum_0']
         if kwargs.get('plot'):
             self.viewImage()
