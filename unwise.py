@@ -120,8 +120,15 @@ class unwise:
             pos=SkyCoord(ra=self.ra,dec=self.dec,unit='deg')
             aper.append(ap.SkyEllipticalAperture(pos,a*u.arcsec,b*u.arcsec,theta=phi))
             #return aper
-        f=fits.open(self.fP)
-        flux=ap.aperture_photometry(f[0],aper)
+        try:
+            f=fits.open(self.fP)
+            flux=ap.aperture_photometry(f[0],aper)
+        except:
+            er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
+            log.error(er)
+            print(er)
+            u=[0.0,0.0,0.0,0.0]
+            return u
             #return flux[0]['aperture_sum_0']
         if kwargs.get('plot'):
             self.viewImage()
