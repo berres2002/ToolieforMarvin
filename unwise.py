@@ -111,32 +111,32 @@ class unwise:
     def getApFlux(self,n,**kwargs:{'plot':False}):
         aper=[]
         self.getFits()
-        #try: 
-            for i in range(len(n)):
-                a=float(self.r['nsa_elpetro_th50_r'])*n[i]
-                b=a*float(self.r['nsa_elpetro_ba'])
-                phi=float(self.r['nsa_elpetro_phi'])*u.deg
+        #try:
+        for i in range(len(n)):
+            a=float(self.r['nsa_elpetro_th50_r'])*n[i]
+            b=a*float(self.r['nsa_elpetro_ba'])
+            phi=float(self.r['nsa_elpetro_phi'])*u.deg
                 #print(a,b,phi,self.ra,self.dec)
-                pos=SkyCoord(ra=self.ra,dec=self.dec,unit='deg')
-                aper.append(ap.SkyEllipticalAperture(pos,a*u.arcsec,b*u.arcsec,theta=phi))
+            pos=SkyCoord(ra=self.ra,dec=self.dec,unit='deg')
+            aper.append(ap.SkyEllipticalAperture(pos,a*u.arcsec,b*u.arcsec,theta=phi))
             #return aper
-            f=fits.open(self.fP)
-            flux=ap.aperture_photometry(f[0],aper)
+        f=fits.open(self.fP)
+        flux=ap.aperture_photometry(f[0],aper)
             #return flux[0]['aperture_sum_0']
-            if kwargs.get('plot'):
-                self.viewImage()
-                fw=WCS(f[0].header)
-                aper.to_pixel(fw).plot(color='blue')
-            if self.band==3:
-                arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
-                b3=arr*1.8326e-06
-                f.close()
-                return b3
-            if self.band==4:
-                arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
-                b4=arr*5.2269E-05
-                f.close()
-                return b4
+        if kwargs.get('plot'):
+            self.viewImage()
+            fw=WCS(f[0].header)
+            aper.to_pixel(fw).plot(color='blue')
+        if self.band==3:
+            arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
+            b3=arr*1.8326e-06
+            f.close()
+            return b3
+        if self.band==4:
+            arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
+            b4=arr*5.2269E-05
+            f.close()
+            return b4
      #   except:
      #       er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
      #       log.error(er)
