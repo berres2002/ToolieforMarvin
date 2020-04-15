@@ -3,8 +3,9 @@ from astropy.table import Table
 import numpy as np
 import os
 from toolie import MFTOOLIE as mft
+from toolie import MFT2 as mft2
 import pandas as pd
-
+#the first iteration of auto
 class auto:
 
     def run(self,plates,file):
@@ -76,10 +77,57 @@ class auto:
             if umm=='n' or '':
                 print('Exiting Program')
                 return
+class auto2:
+
+    def run(self,plates,file):
+        ext=[]
+        ext=np.array(ext)
+        print('Starting For loop for an array of '+str(len(plates))+' elements')
+        for i in range(len(plates)):
+            m1=mf2(plates[i])
+            ext=np.append(ext,m1.extinct())
+            #add more in time
+        data = pd.DataFrame({'Plate-IFU':plates,'extinction':ext})
+        data.to_csv(file,index=False)
+        print('Data table saved as = '+file)
+    def__init__(self):
+        in1=input('\nType 1 for Demo of Exp mode and 2 for full run -> ')
+        if in1=='1':
+            f = Table.read(os.getenv('MANGA_SPECTRO_REDUX')+'/MPL-9/drpall-v2_7_1.fits',format='fits')
+            r = f[f['mngtarg1'] > 0]
+            # ra=np.random.randint(0,len(r))
+            k = 0
+            a = []
+            while k < 5:
+                a.append(r[np.random.randint(0, len(r))]['plateifu'])
+                k = k + 1
+            a = np.array(a)
+            b = a.astype(str)
+            self.run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/test_exp1.csv')
+            print('DONE!')
+        if in1=='2':
+            umm=input('****WARNING: You are about to run the automator for the WHOLE drpall file****\n'
+                      'Do you want to continue (y/[n])?')
+            if umm=='y':
+                f = Table.read(os.getenv('MANGA_SPECTRO_REDUX')+'/MPL-9/drpall-v2_7_1.fits',format='fits')
+                r = f[f['mngtarg1'] > 0]
+                k = 0
+                a = []
+                for i in range(len(r)):
+                    a.append(r[i]['plateifu'])
+                a = np.array(a)
+                b = a.astype(str)
+                self.run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/full_MPL9_exp1.csv')
+            if umm=='n' or '':
+                print('Exiting Program')
+                return
+        print('Exiting Program')
+        return
 
 if __name__=='__main__':
-    inp=input('\nType 0 for Demo, "exit" to exit, and anything else for the full thing -> ')
-    if inp =='exit':
-        print('Exiting Program')
-    else:
+    inp=input('\nType "0" for Demo, "1" for the Full MPL file, "2" for Experimental Mode, type "exit" to exit -> ')
+    if inp=='0' or inp=='1':
         auto(inp)
+    if inp=='2':
+        auto2()
+    return

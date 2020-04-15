@@ -242,3 +242,32 @@ class   MFTOOLIE:
             log.error(yuh)
             print(yuh)
             return 0.0
+#MFTOOLIE PARTE DEUX using 'masks' function instead of masking non SF spaxels
+class MFT2:
+    def __init__(self,s):
+        self.efail=False
+        self.s=s
+        m=Maps(s)
+        #print(m.release)
+        self.m=m
+        hal=m.getMap('emline_gflux',channel='ha_6564')
+        hbe=m.getMap('emline_gflux',channel='Hb_4862')
+        self.ha=hal.masked.sum()
+        self.hb=hbe.masked.sum()
+        # add more if needed
+    def extinct(self,**kwargs:{'use_mRatio':False}):
+        if self.efail:
+            return 0.0
+        try:
+            if kwargs.get('use_mRatio') == True:
+                e = 0.934 * np.log((self.fRat) / 2.86)
+                return e
+            else:
+                e = 0.934 * np.log((float(self.ha.value) / float(self.hb.value)) / 2.86)
+                return e
+        except:
+            s1='The extinct() function failed for plate-ifu: '+self.s
+            log.error(s1)
+            print(s1)
+            self.efail=True
+            return 999.0
