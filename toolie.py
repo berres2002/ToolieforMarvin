@@ -245,19 +245,26 @@ class   MFTOOLIE:
 #MFTOOLIE PARTE DEUX using 'masks' function instead of masking non SF spaxels
 class MFT2:
     def __init__(self,s):
-        self.efail=False
-        self.s=s
-        m=Maps(s)
-        #print(m.release)
-        self.m=m
-        hal=m.getMap('emline_gflux',channel='ha_6564')
-        hbe=m.getMap('emline_gflux',channel='Hb_4862')
-        self.ha=hal.masked.sum()
-        self.hb=hbe.masked.sum()
-        # add more if needed
+        try:
+            self.efail=False
+            self.s=s
+            m=Maps(s)
+            #print(m.release)
+            self.m=m
+            hal=m.getMap('emline_gflux',channel='ha_6564')
+            hbe=m.getMap('emline_gflux',channel='Hb_4862')
+            self.ha=hal.masked.sum()
+            self.hb=hbe.masked.sum()
+            # add more if needed
+        except:
+            yo='The MFTOOLIE2 initializer failed for Plate-Ifu '+s
+            log.error(yo)
+            print(yo)
+            self.efail = True
+
     def extinct(self,**kwargs:{'use_mRatio':False}):
         if self.efail:
-            return 0.0
+            return 999.0
         try:
             if kwargs.get('use_mRatio') == True:
                 e = 0.934 * np.log((self.fRat) / 2.86)
