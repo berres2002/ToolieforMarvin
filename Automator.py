@@ -84,7 +84,7 @@ class auto2:
         ext=np.array(ext)
         print('Starting For loop for an array of '+str(len(plates))+' elements')
         for i in range(len(plates)):
-            m1=mf2(plates[i])
+            m1=mft2(plates[i])
             ext=np.append(ext,m1.extinct())
             #add more in time
         data = pd.DataFrame({'Plate-IFU':plates,'extinction':ext})
@@ -130,4 +130,3 @@ if __name__=='__main__':
         auto(inp)
     if inp=='2':
         auto2()
-    
