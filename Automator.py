@@ -84,6 +84,12 @@ class auto2:
         ext=np.array(ext)
         print('Starting For loop for an array of '+str(len(plates))+' elements')
         for i in range(len(plates)):
+            if i==np.ceil(0.25*len(plates)):
+                print('25% Complete...')
+            if i==np.ceil(0.5*len(plates)):
+                print('50% Complete...')
+            if i==np.ceil(0.75*len(plates)):
+                print('75% Complete...')
             m1=mft2(plates[i])
             ext=np.append(ext,m1.extinct())
             #add more in time
@@ -114,12 +120,6 @@ class auto2:
                 k = 0
                 a = []
                 for i in range(len(r)):
-                    if i==np.ceil(0.25*len(r)):
-                        print('25% Complete...')
-                    if i==np.ceil(0.5*len(r)):
-                        print('50% Complete...')
-                    if i==np.ceil(0.75*len(r)):
-                        print('75% Complete...')
                     a.append(r[i]['plateifu'])
                 a = np.array(a)
                 b = a.astype(str)
