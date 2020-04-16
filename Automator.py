@@ -130,4 +130,4 @@ if __name__=='__main__':
         auto(inp)
     if inp=='2':
         auto2()
-    return
+    
