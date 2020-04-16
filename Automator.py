@@ -90,7 +90,7 @@ class auto2:
         data = pd.DataFrame({'Plate-IFU':plates,'extinction':ext})
         data.to_csv(file,index=False)
         print('Data table saved as = '+file)
-    def__init__(self):
+    def __init__(self):
         in1=input('\nType 1 for Demo of Exp mode and 2 for full run -> ')
         if in1=='1':
             f = Table.read(os.getenv('MANGA_SPECTRO_REDUX')+'/MPL-9/drpall-v2_7_1.fits',format='fits')
