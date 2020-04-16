@@ -263,7 +263,7 @@ class MFT2:
                 e = 0.934 * np.log((self.fRat) / 2.86)
                 return e
             else:
-                e = 0.934 * np.log((float(self.ha.value) / float(self.hb.value)) / 2.86)
+                e = 0.934 * np.log((float(self.ha) / float(self.hb)) / 2.86)
                 return e
         except:
             s1='The extinct() function failed for plate-ifu: '+self.s
