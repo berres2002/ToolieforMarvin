@@ -253,8 +253,8 @@ class MFT2:
             self.m=m
             hal=m.getMap('emline_gflux',channel='ha_6564')
             hbe=m.getMap('emline_gflux',channel='Hb_4862')
-            self.ha=hal.masked.sum()
-            self.hb=hbe.masked.sum()
+            self.ha=hal.masked.sum() * 10**(-17)
+            self.hb=hbe.masked.sum() * 10**(-17)
             # add more if needed
         except:
             yo='The MFTOOLIE2 initializer failed for Plate-Ifu '+s
@@ -277,4 +277,17 @@ class MFT2:
             log.error(s1)
             print(s1)
             self.efail=True
+            return 999.0
+    def fluxFind(self):
+        # $print('THIS STATEMENT IS TRUE')
+        try:
+            if self.efail:
+                return 999.0
+            e = self.extinct()
+            a = self.ha * 10 ** (0.4 * 2.468 * e) #* u.erg / (u.cm ** 2 * u.second)
+            return a
+        except:
+            s2='The fluxFind() function failed for plate-ifu: '+self.s
+            log.error(s2)
+            print(s2)
             return 999.0

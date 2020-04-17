@@ -82,6 +82,10 @@ class auto2:
     def run(self,plates,file):
         ext=[]
         ext=np.array(ext)
+        ha=[]
+        ha=np.array(ha)
+        hac=[]
+        hac=np.array(hac)
         print('Starting For loop for an array of '+str(len(plates))+' elements')
         for i in range(len(plates)):
             if i==np.ceil(0.25*len(plates)):
@@ -92,8 +96,10 @@ class auto2:
                 print('75% Complete...')
             m1=mft2(plates[i])
             ext=np.append(ext,m1.extinct())
+            ha=np.append(ha,m1.ha)
+            hac=np.append(hac,m1.fluxFind())
             #add more in time
-        data = pd.DataFrame({'Plate-IFU':plates,'extinction':ext})
+        data = pd.DataFrame({'Plate-IFU':plates,'extinction':ext,'ha_6564':ha,'ha_6564c':hac})
         data.to_csv(file,index=False)
         print('Data table saved as = '+file)
     def __init__(self):
