@@ -259,6 +259,7 @@ class MFT2:
         except:
             yo='The MFTOOLIE2 initializer failed for Plate-Ifu '+s
             log.error(yo)
+            self.ha=999.0
             print(yo)
             self.efail = True
 
