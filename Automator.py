@@ -82,10 +82,12 @@ class auto2:
     def run(self,plates,file):
         ext=[]
         ext=np.array(ext)
-        ha=[]
-        ha=np.array(ha)
+        hal=[]
+        hal=np.array(hal)
         hac=[]
         hac=np.array(hac)
+        lum1=np.array([])
+        lum2=np.array([])
         print('Starting For loop for an array of '+str(len(plates))+' elements')
         for i in range(len(plates)):
             if i==np.ceil(0.25*len(plates)):
@@ -96,10 +98,12 @@ class auto2:
                 print('75% Complete...')
             m1=mft2(plates[i])
             ext=np.append(ext,m1.extinct())
-            ha=np.append(ha,m1.ha)
+            hal=np.append(hal,m1.ha)
             hac=np.append(hac,m1.fluxFind())
+            lum1=np.append(lum1,m1.findLum(True))
+            lum2=np.append(lum2,m1.findLum(False))
             #add more in time
-        data = pd.DataFrame({'Plate-IFU':plates,'extinction':ext,'ha_6564':ha,'ha_6564c':hac})
+        data = pd.DataFrame({'Plate-IFU':plates,'extinction':ext,'ha_6564':hal,'ha_6564c':hac,'l_ha':lum2,'l_hac':lum1})
         data.to_csv(file,index=False)
         print('Data table saved as = '+file)
     def __init__(self):
@@ -115,7 +119,7 @@ class auto2:
                 k = k + 1
             a = np.array(a)
             b = a.astype(str)
-            self.run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/test_exp1.csv')
+            self.run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/test_exp2.csv')
             print('DONE!')
         if in1=='2':
             umm=input('****WARNING: You are about to run the automator for the WHOLE drpall file****\n'
@@ -129,7 +133,7 @@ class auto2:
                     a.append(r[i]['plateifu'])
                 a = np.array(a)
                 b = a.astype(str)
-                self.run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/full_MPL9_exp1.csv')
+                self.run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/full_MPL9_exp2.csv')
             if umm=='n' or '':
                 print('Exiting Program')
                 return

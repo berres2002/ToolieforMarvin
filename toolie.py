@@ -251,10 +251,21 @@ class MFT2:
             m=Maps(s)
             #print(m.release)
             self.m=m
+            masks=m.get_bpt(return_figure=False,show_plot=False)
+            man= masks['sf']['global']
             hal=m.getMap('emline_gflux',channel='ha_6564')
             hbe=m.getMap('emline_gflux',channel='Hb_4862')
+            hal=hal[man]
+            if hal.value.sum()==0.0:
+                yo='The h-alpha array has no sf spaxels (all masked out), failed for Plate-Ifu '+s
+                log.error(yo)
+                self.ha=999.0
+                print(yo)
+                self.efail = True
+            hbe=hbe[man]
             self.ha=hal.masked.sum() * 10**(-17)
             self.hb=hbe.masked.sum() * 10**(-17)
+            self.z=float(m.dapall['nsa_zdist'])
             # add more if needed
         except:
             yo='The MFTOOLIE2 initializer failed for Plate-Ifu '+s
@@ -291,4 +302,35 @@ class MFT2:
             s2='The fluxFind() function failed for plate-ifu: '+self.s
             log.error(s2)
             print(s2)
+            return 999.0
+    def findLum(self,corr):
+        try:
+            if corr:
+                x=cosmo.luminosity_distance(self.z).to(u.cm)
+                x=x.value
+                if self.efail:
+                    return 999.0
+                fl = self.fluxFind() #* u.erg / (u.cm ** 2 * u.second)
+                if fl == 0.0:
+                    return 999.0
+                if fl=='Fail':
+                    return 999.0
+                L = fl * 4 * pi * x ** 2
+                return L
+            else:
+                x=cosmo.luminosity_distance(self.z).to(u.cm)
+                x=x.value
+                if self.efail:
+                    return 999.0
+                fl = self.ha #* u.erg / (u.cm ** 2 * u.second)
+                if fl == 0.0:
+                    return 999.0
+                if fl=='Fail':
+                    return 999.0
+                L = fl * 4 * pi * x ** 2
+                return L
+        except:
+            es='The findLum() function failed for plate-ifu: '+self.s
+            print(es)
+            log.error(es)
             return 999.0
