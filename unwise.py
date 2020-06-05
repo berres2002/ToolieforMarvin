@@ -133,7 +133,10 @@ class unwise:
         if kwargs.get('plot'):
             self.viewImage()
             fw=WCS(f[0].header)
-            aper.to_pixel(fw).plot(color='blue')
+            aper[0].to_pixel(fw).plot(color='blue')
+            aper[1].to_pixel(fw).plot(color='red')
+            aper[2].to_pixel(fw).plot(color='green')
+            aper[3].to_pixel(fw).plot(color='yellow')
         if self.band==3:
             arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
             b3=arr*1.8326e-06
