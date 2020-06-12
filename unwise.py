@@ -46,8 +46,8 @@ class unwise:
         try:
             f=fits.open(self.fP)
             bruh=self.fN+' already exists at '+self.path
-            print(bruh)
-            log.error(bruh)
+            #print(bruh)
+            #log.error(bruh)
             f.close()
             return
         except:
@@ -127,7 +127,7 @@ class unwise:
                 arrbg=np.array([cbg[0]['aperture_sum_0'],cbg[0]['aperture_sum_1'],cbg[0]['aperture_sum_2'],cbg[0]['aperture_sum_3']])
                 b4bg=arrbg*5.2269E-05
             except:
-                b4bg=[999.0,999.0,999.0,999.0]
+                b4bg=np.array([999.0,999.0,999.0,999.0])
             aper=[]
             for i in range(len(n)):
                 a=float(self.r['nsa_elpetro_th50_r'])*n[i]
@@ -146,7 +146,7 @@ class unwise:
                 er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
                 log.error(er)
                 print(er)
-                bad=[999.0,999.0,999.0,999.0]
+                bad=np.array([999.0,999.0,999.0,999.0])
                 b4=bad
             f.close()
             return b4,b4bg
