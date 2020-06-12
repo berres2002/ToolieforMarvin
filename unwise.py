@@ -146,7 +146,7 @@ class unwise:
                 er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
                 log.error(er)
                 print(er)
-                bad=np.array([999.0,999.0,999.0,999.0])
+                bad=np.array([-999.0,-999.0,-999.0,-999.0])
                 b4=bad
             f.close()
             return b4,b4bg
