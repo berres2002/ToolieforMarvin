@@ -109,7 +109,7 @@ class unwise:
         plt.title(self.plate+' Band-'+str(self.band)+" ("+bd[self.band]+')')
         plt.colorbar()
     def getApFlux(self,n,**kwargs:{'plot':False,'bg':False}):
-         if kwargs.get('bg'):
+        if kwargs.get('bg'):
             posbg=SkyCoord(ra=self.ra,dec=self.dec-0.01,unit='deg')
             abg=float(self.r['nsa_elpetro_th50_r'])*2.0
             apbg=ap.SkyEllipticalAperture(posbg,abg*u.arcsec,abg*u.arcsec)
