@@ -108,7 +108,18 @@ class unwise:
         plt.grid(False)
         plt.title(self.plate+' Band-'+str(self.band)+" ("+bd[self.band]+')')
         plt.colorbar()
-    def getApFlux(self,n,**kwargs:{'plot':False}):
+    def getApFlux(self,n,**kwargs:{'plot':False,'bg':False}):
+         if kwargs.get('bg'):
+            posbg=SkyCoord(ra=self.ra,dec=self.dec-0.01,unit='deg')
+            abg=float(self.r['nsa_elpetro_th50_r'])*2.0
+            apbg=ap.SkyEllipticalAperture(posbg,abg*u.arcsec,abg*u.arcsec)
+            f=fits.open(self.fP)
+            self.viewImage()
+            fw=WCS(f[0].header)
+            apbg.to_pixel(fw).plot(color='red')
+            flux=ap.aperture_photometry(f[0],apbg)
+            f.close()
+            return flux['aperture_sum'][0]
         aper=[]
         self.getFits()
         #try:
@@ -127,7 +138,7 @@ class unwise:
             er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
             log.error(er)
             print(er)
-            bad=[0.0,0.0,0.0,0.0]
+            bad=[999.0,999.0,999.0,999.0]
             return bad
             #return flux[0]['aperture_sum_0']
         if kwargs.get('plot'):
@@ -137,6 +148,7 @@ class unwise:
             aper[1].to_pixel(fw).plot(color='red')
             aper[2].to_pixel(fw).plot(color='green')
             aper[3].to_pixel(fw).plot(color='yellow')
+            plt.savefig('/uufs/chpc.utah.edu/common/home/sdss09/mangawork/users/u6030555/'+'wise_pdf/'+self.plate +'_'+str(self.band)+'.pdf')
         if self.band==3:
             arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
             b3=arr*1.8326e-06
@@ -153,3 +165,5 @@ class unwise:
      #       print(er)
      #       u=[0.0,0.0,0.0,0.0]
      #       return u
+
+#/uufs/chpc.utah.edu/common/home/sdss09/mangawork/users/u6030555/
