@@ -118,7 +118,7 @@ class auto2:
             a.append(r[i]['plateifu'])
         a = np.array(a)
         b = a.astype(str)
-        run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/wise_test1.csv')
+        self.run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/wise_test1.csv')
 if __name__=='__main__':
     inp=input('\nType 0 for Demo, "exit" to exit, and 1 for the full thing and 2 for something special -> ')
     if inp =='exit':
