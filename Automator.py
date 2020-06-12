@@ -104,7 +104,7 @@ class auto2:
         t2=dt.now()
         print('Data table saved as = '+file)
         print('This took',t2-t1)
-    def __init__(self,t):
+    def __init__(self):
         f = Table.read(os.getenv('MANGA_SPECTRO_REDUX')+'/MPL-9/drpall-v2_7_1.fits',format='fits')
         r = f[f['mngtarg1'] > 0]
         # ra=np.random.randint(0,len(r))
