@@ -110,16 +110,46 @@ class unwise:
         plt.colorbar()
     def getApFlux(self,n,**kwargs:{'plot':False,'bg':False}):
         if kwargs.get('bg'):
-            posbg=SkyCoord(ra=self.ra,dec=self.dec-0.01,unit='deg')
-            abg=float(self.r['nsa_elpetro_th50_r'])*2.0
-            apbg=ap.SkyEllipticalAperture(posbg,abg*u.arcsec,abg*u.arcsec)
+            self.getFits()
+            apbg=[]
+            for i in range(len(n)):
+                posbg=SkyCoord(ra=self.ra,dec=self.dec-0.02,unit='deg')
+                abg=float(self.r['nsa_elpetro_th50_r'])*n[i]
+                bbg=abg*float(self.r['nsa_elpetro_ba'])
+                phibg=float(self.r['nsa_elpetro_phi'])*u.deg
+                apbg.append(ap.SkyEllipticalAperture(posbg,abg*u.arcsec,bbg*u.arcsec,theta=phibg))
             f=fits.open(self.fP)
-            self.viewImage()
-            fw=WCS(f[0].header)
-            apbg.to_pixel(fw).plot(color='red')
-            flux=ap.aperture_photometry(f[0],apbg)
+            #self.viewImage()
+            #fw=WCS(f[0].header)
+            #apbg.to_pixel(fw).plot(color='red')
+            try:
+                cbg=ap.aperture_photometry(f[0],apbg)
+                arrbg=np.array([cbg[0]['aperture_sum_0'],cbg[0]['aperture_sum_1'],cbg[0]['aperture_sum_2'],cbg[0]['aperture_sum_3']])
+                b4bg=arrbg*5.2269E-05
+            except:
+                b4bg=[999.0,999.0,999.0,999.0]
+            aper=[]
+            for i in range(len(n)):
+                a=float(self.r['nsa_elpetro_th50_r'])*n[i]
+                b=a*float(self.r['nsa_elpetro_ba'])
+                phi=float(self.r['nsa_elpetro_phi'])*u.deg
+                    #print(a,b,phi,self.ra,self.dec)
+                pos=SkyCoord(ra=self.ra,dec=self.dec,unit='deg')
+                aper.append(ap.SkyEllipticalAperture(pos,a*u.arcsec,b*u.arcsec,theta=phi))
+                #return aper
+            try:
+                #f=fits.open(self.fP)
+                flux=ap.aperture_photometry(f[0],aper)
+                arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
+                b4=arr*5.2269E-05
+            except:
+                er='Something went wrong in getAPFlux() for the file "'+self.fN+'" for scale radius='+str(n)
+                log.error(er)
+                print(er)
+                bad=[999.0,999.0,999.0,999.0]
+                b4=bad
             f.close()
-            return flux['aperture_sum'][0]
+            return b4,b4bg
         aper=[]
         self.getFits()
         #try:
@@ -148,7 +178,7 @@ class unwise:
             aper[1].to_pixel(fw).plot(color='red')
             aper[2].to_pixel(fw).plot(color='green')
             aper[3].to_pixel(fw).plot(color='yellow')
-            plt.savefig('/uufs/chpc.utah.edu/common/home/sdss09/mangawork/users/u6030555/'+'wise_pdf/'+self.plate +'_'+str(self.band)+'.pdf')
+            plt.savefig('/uufs/chpc.utah.edu/common/home/sdss09/mangawork/users/u6030555/'+'wise_pdf/'+self.plate +'_'+str(self.band)+'.png')
         if self.band==3:
             arr=np.array([flux[0]['aperture_sum_0'],flux[0]['aperture_sum_1'],flux[0]['aperture_sum_2'],flux[0]['aperture_sum_3']])
             b3=arr*1.8326e-06

@@ -4,6 +4,7 @@ import numpy as np
 import os
 from toolie import MFTOOLIE as mft
 import pandas as pd
+from datetime import datetime as dt
 
 class auto:
 
@@ -78,33 +79,43 @@ class auto:
                 return
 class auto2:
     def run(self,plates,file):
+        t1=dt.now()
         imfl = []
         imfl = np.array(imfl)
         scales = [1.5, 2, 2.5, 3]
         pl = []
         pl = np.array(pl)
         s1 = np.array([])
+        backg=np.array([])
+        efl=np.array([])
         print('Starting For loop for an array of '+str(len(plates))+' elements')
         for i in range(len(plates)):
             wis=uw(plates[i],4)
-            imfl = np.append(imfl,wis.getApFlux(scales,plot=True))
+            fl,bg = wis.getApFlux(scales,bg=True)
+            imfl=np.append(imfl,fl)
+            backg=np.append(backg,bg)
+            efl=np.append(efl,fl-bg)
             s1=np.append(s1,scales)
-            pl = np.append(pl, np.full(8, plates[i]))
+            pl = np.append(pl, np.full(4, plates[i]))
         data = pd.DataFrame(
-            {'Plate-IFU': pl, 'Scale of radius': s1,
-             'Flux': imfl},columns=['Plate-IFU','Distance','Luminosity','SFR','WISE Band','Scale of radius','Flux'])
+            {'Plate-IFU': pl, 'Scale_of_radius': s1,
+             'flux_dens': imfl,'bg_flux_dens':backg,'fd_diff':efl})
         data.to_csv(file,index=False)
+        t2=dt.now()
         print('Data table saved as = '+file)
+        print('This took',t2-t1)
     def __init__(self,t):
         f = Table.read(os.getenv('MANGA_SPECTRO_REDUX')+'/MPL-9/drpall-v2_7_1.fits',format='fits')
         r = f[f['mngtarg1'] > 0]
         # ra=np.random.randint(0,len(r))
         #k = 0
         a = []
-        ruh=np.random.randint(0,len(r),size=300)
-        for i in range(len(ruh)):
-            a.append(r[ruh[i]]['plateifu'])
-            #k = k + 1
+        f = Table.read(os.getenv('MANGA_SPECTRO_REDUX')+'/MPL-9/drpall-v2_7_1.fits',format='fits')
+        r = f[f['mngtarg1'] > 0]
+        #k = 0
+        a = []
+        for i in range(len(r)):
+            a.append(r[i]['plateifu'])
         a = np.array(a)
         b = a.astype(str)
         run(b,'/uufs/chpc.utah.edu/common/home/u6030555/data_folder/csv_data/wise_test1.csv')
